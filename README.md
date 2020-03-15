@@ -25,7 +25,7 @@
 
 * Synchronization mechanisms are:
     * Mutual exclusion (*mutex*) marks critical sections. Critical sections are pieces of code that, while the thread is in them, cannot get preempted by the OS. Make sure you are in critical sections __as briefly as possible__.
-    * Condition variable - a specific condition which has to be fulfilled before proceeding. While the thread is in a You then make your thread wait on the condition variable (thread block here). Other threads then send a signal/broadcast on that same condition variable once some state changes. This puts your thread back into the ready state so it can get scheduled again by the CPU. Make sure you check the condition variable again before proceeding (use the *while* loop), because some other thread might have acquired the variable and changed its value before your thread got a chance to get scheduled.
+    * Condition variable - a specific condition which has to be fulfilled before proceeding. While the thread is in a You then make your thread wait on the condition variable (thread block here). Other threads then send a signal/broadcast on that same condition variable once some state changes. This puts your thread back into the ready state so it can get scheduled again by the CPU. To prevent spurious wakeups, make sure you check the condition variable again before proceeding (use the *while* loop), because some other thread might have acquired the variable and changed its value before your thread got a chance to get scheduled.
 
 ### Thread Representation and Thread Creation
 
@@ -38,7 +38,6 @@
 
 ![image](https://user-images.githubusercontent.com/26722936/76698614-706c3c80-66a5-11ea-9cad-096494c08889.png)
 
-* Prevent spurious wakeups. 
 * Deadlocks: deadlock prevention is best done by maintaing lock order. First acquire lock A, then lock B.
 * Mutex safety:
     * Shared data should be accessed through a single mutex.
