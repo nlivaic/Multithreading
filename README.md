@@ -38,12 +38,28 @@
 
 ![image](https://user-images.githubusercontent.com/26722936/76698614-706c3c80-66a5-11ea-9cad-096494c08889.png)
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+* Prevent spurious wakeups. 
+* Deadlocks: deadlock prevention is best done by maintaing lock order. First acquire lock A, then lock B.
+* Mutex safety:
+    * Shared data should be accessed through a single mutex.
+    * Mutex scope must be visible to all threads involved.
+    * Lock mutexes in a specific order to prevent deadlocks.
+* Condition variables safety tips:
+    * Notify waiting threads.
+    * When in doubt - broadcast. Keep in mind performance cost (since it is more expensive to broadcast as opposed to signalling).
+    * Mutex is not neededfor broadcast/signal. Release mutex first, then broadcast/signal.
+
+### Threading patterns
+
+* Producer/Consumer - One producer and multiple consumers. Producer inserts at head of queue, consumers remove from end of queue. Lock is necessary so consumers do not consume the same item. Care must be taken so producer blocks once queue is full and consumers block once queue is empty.
+* Reader/Writer - Zero or more readers read a resource (e.g. a variable or a file), while zero or one writers write to the resource. Placing the mutex to guard access to resource would be too restrictive as we want to allow multiple reader to read at the same time, while simultaneously only allow one writer if there are no readers reading the resource. A better approach is to create counters for readers and writers respectively and place mutex around those resources. Once a lock is successfuly acquired and condition variables are favourable, access to the resource can be granted.
+* Boss/Workers - Boss receives a request and then passes it to worker thread(s). We want to keep the boss as simple as possible.
+    * A few approaches here are:
+        1. boss knows which threads are free and assigns work to one of them. Downside is the boss now has to keep track of thread status (increases complexity). Upside is worker threads do not have to synchronize (faster execution, simpler workers).
+        2. a queue exists with boss writing into it and workers reading from it. This is similar to Reader/Writer pattern. Downside is worker threads have to synchronize on queue. Upside is boss has no overhead regarding worker threads. This approach is favoured because in practice it provides higher throughput.
+    * How many workers?
+        * On demand, each creation has a cost, can add overhead if there are too many of them.
+        * A pool of ready workers is a better option.
 
 ### User-level threads vs kernel threads
 
