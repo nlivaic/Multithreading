@@ -38,7 +38,27 @@
 
 ![image](https://user-images.githubusercontent.com/26722936/76698614-706c3c80-66a5-11ea-9cad-096494c08889.png)
 
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+### User-level threads vs kernel threads
+
+* The difference is in how they are scheduled:
+    * ULT are scheduled by the app itself in user-land. Kernel is not aware of these threads. If ULT blocks, entire process is blocked because kernel doesn't discern between threads belonging to the same process.
+    * KLT are scheduled by the kernel, which implies the kernel is aware of these threads.
+* Both ULT and KLT run user code.
+* Java JVM uses KLT.
+* One-to-one ULT:KLT is nowadays the dominant model.
+* When request a thread using CLR, you will get a KLT (on Windows machine).
+* Kernel-backed threading model: kernel schedules each thread individually. Allows for parallel execution of multiple threads belonging to the same process (in a multi-core system).
+* "User level threads map to kernel level threads" - meaning of the phrase is as follows:
+    * User space is presented an abstraction of a unit of execution (i.e. a thread can be thought of as a virtual CPU).
+    * This abstraction is implemented through a kernel-level thread, owning kernel resources.
+    * What this means is user level threads as such do not exist (on Linux), but rather each thread **is** kernel thread.
 
 
     
